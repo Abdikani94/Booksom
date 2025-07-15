@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FaShoppingCart } from 'react-icons/fa';
-import logo from '../assets/ilwaadshop.png';
 import ThemeToggle from './ThemeToggle';
 import { useCart } from '../Components/Context/CartContext';
 
@@ -22,7 +21,7 @@ function Header() {
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         {/* Logo iyo magaca */}
         <Link to="/" className="flex items-center space-x-3 rtl:space-x-reverse">
-          <img src={logo} className="h-10 rounded-4xl" alt="BookSom" />
+        
           <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
            BookSom
           </span>
