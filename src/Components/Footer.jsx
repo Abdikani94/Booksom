@@ -8,7 +8,7 @@ const Footer = () => {
         
         {/* About Section */}
         <div>
-          <h3 className="text-xl font-semibold mb-4 text-white">About BookStore</h3>
+          <h3 className="text-xl font-semibold mb-4 text-white">About Booksom</h3>
           <p className="text-sm leading-relaxed">
             Discover a wide collection of books, from bestsellers to timeless classics. We bring knowledge and stories to your fingertips.
           </p>

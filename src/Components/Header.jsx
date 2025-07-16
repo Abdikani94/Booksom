@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FaShoppingCart } from 'react-icons/fa';
 import ThemeToggle from './ThemeToggle';
@@ -6,33 +6,10 @@ import { useCart } from '../Components/Context/CartContext';
 
 function Header() {
   const [isOpen, setIsOpen] = useState(false);
-  const [scrollDirection, setScrollDirection] = useState('up');
   const location = useLocation();
   const { cartItems } = useCart();
 
   const handleLinkClick = () => setIsOpen(false);
-
-  // Detect scroll direction
-  useEffect(() => {
-    let lastScrollY = window.scrollY;
-
-    const updateScrollDirection = () => {
-      const currentScrollY = window.scrollY;
-      const direction = currentScrollY > lastScrollY ? 'down' : 'up';
-
-      if (direction !== scrollDirection && Math.abs(currentScrollY - lastScrollY) > 10) {
-        setScrollDirection(direction);
-      }
-
-      lastScrollY = currentScrollY > 0 ? currentScrollY : 0;
-    };
-
-    window.addEventListener('scroll', updateScrollDirection);
-
-    return () => {
-      window.removeEventListener('scroll', updateScrollDirection);
-    };
-  }, [scrollDirection]);
 
   const navLinkClass = (path) =>
     location.pathname === path
@@ -40,20 +17,36 @@ function Header() {
       : "block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white";
 
   return (
-    <nav
-      className={`fixed top-0 w-full z-50 bg-white shadow-md dark:bg-gray-900 border-b border-gray-300 px-10 transition-transform duration-300 ${
-        scrollDirection === 'down' ? '-translate-y-full' : 'translate-y-0'
-      }`}
-    >
+    <nav className="fixed top-0 w-full z-50 bg-white shadow-md dark:bg-gray-900 border-b border-gray-300 px-10">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+        {/* Logo */}
         <Link to="/" onClick={handleLinkClick} className="flex items-center space-x-3 rtl:space-x-reverse">
           <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
             BookSom
           </span>
         </Link>
 
-        <div className="flex md:order-2 items-center space-x-2">
+        {/* Right Side: Theme + Buttons */}
+        <div className="flex md:order-2 items-center space-x-4">
           <ThemeToggle />
+
+          <Link
+            to="/Login"
+            onClick={handleLinkClick}
+            className="text-sm font-medium px-4 py-2 border border-gray-400 dark:border-white text-gray-800 dark:text-white rounded hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            Login
+          </Link>
+
+          <Link
+            to="/Logout"
+            onClick={handleLinkClick}
+            className="text-sm font-medium px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+          >
+            Logout
+          </Link>
+
+          {/* Mobile Menu Button */}
           <button
             type="button"
             className="md:hidden text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none 
@@ -73,6 +66,7 @@ function Header() {
           </button>
         </div>
 
+        {/* Navigation Links */}
         <div className={`items-center justify-between w-full md:flex md:w-auto md:order-1 ${isOpen ? '' : 'hidden'}`}>
           <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg  
                          md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0
@@ -87,6 +81,16 @@ function Header() {
                 Books
               </Link>
             </li>
+            <li>
+              <Link to="/About" onClick={handleLinkClick} className={navLinkClass('/About')}>
+                About
+              </Link>
+            </li>
+            <li>
+              <Link to="/contact" onClick={handleLinkClick} className={navLinkClass('/contact')}>
+                Contact
+              </Link>
+            </li>
             <li className="relative">
               <Link to="/cart" onClick={handleLinkClick} className="text-gray-900 dark:text-white flex items-center gap-1">
                 <FaShoppingCart size={24} />
@@ -96,16 +100,6 @@ function Header() {
                     {cartItems.length}
                   </span>
                 )}
-              </Link>
-            </li>
-            <li>
-              <Link to="/Login" onClick={handleLinkClick} className={navLinkClass('/Login')}>
-                Login
-              </Link>
-            </li>
-            <li>
-              <Link to="/Logout" onClick={handleLinkClick} className={navLinkClass('/Logout')}>
-                Logout
               </Link>
             </li>
           </ul>

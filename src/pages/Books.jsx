@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../Components/Context/CartContext";
 import {
   FaStar,
@@ -11,7 +11,7 @@ import {
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { Fade } from "react-awesome-reveal";
-import { books } from "../Data/books"; // ✅ static books import
+import { books } from "../Data/books";
 
 function renderStars(rating) {
   const stars = [];
@@ -26,18 +26,19 @@ function renderStars(rating) {
   return stars;
 }
 
-function Books() {
+function Books({ auth }) {
   const [booksState, setBooks] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterCategory, setFilterCategory] = useState("All");
   const [sortBy, setSortBy] = useState("default");
   const [currentPage, setCurrentPage] = useState(1);
   const { addToCart } = useCart();
+  const navigate = useNavigate();
   const booksPerPage = 8;
 
   useEffect(() => {
-    // ✅ Use static books instead of API call
     setBooks(books);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
   const categories = ["All", ...new Set(booksState.map((b) => b.category))];
@@ -94,7 +95,7 @@ function Books() {
         </div>
       </div>
 
-      {/* Filter & Sorting */}
+      {/* Filters */}
       <div className="flex flex-col lg:flex-row justify-center items-center gap-4 mb-10 px-4">
         <input
           type="text"
@@ -126,7 +127,7 @@ function Books() {
         </select>
       </div>
 
-      {/* Book Cards */}
+      {/* Books */}
       <div id="explore-books" className="max-w-7xl mx-auto px-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8">
           {currentBooks.length ? (
@@ -160,11 +161,19 @@ function Books() {
 
                     <div className="flex justify-between items-center pt-3">
                       <button
-                        onClick={() => addToCart(book)}
+                        onClick={() => {
+                          if (auth?.isAuthenticated) {
+                            addToCart(book);
+                          } else {
+                            alert("Please login to add to cart.");
+                            navigate("/login");
+                          }
+                        }}
                         className="flex items-center gap-1 text-dark-400 hover:text-dark-300 text-sm transition"
                       >
                         <FaShoppingCart /> Add to Cart
                       </button>
+
                       <div className="flex gap-2">
                         <Link
                           to={`/books/${book.id}`}
@@ -172,12 +181,19 @@ function Books() {
                         >
                           View
                         </Link>
-                        <Link
-                          to={`/books/booking/${book.id}`}
+                        <button
+                          onClick={() => {
+                            if (auth?.isAuthenticated) {
+                              navigate(`/books/booking/${book.id}`);
+                            } else {
+                              alert("Please login to book.");
+                              navigate("/login");
+                            }
+                          }}
                           className="text-sm px-3 py-1.5 rounded-md bg-gradient-to-r from-green-500 to-green-400 hover:from-green-400 hover:to-green-300 text-black font-semibold transition"
                         >
                           Book
-                        </Link>
+                        </button>
                       </div>
                     </div>
                   </div>

@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
-import { books } from "../Data/books"; // ✅ Static data import
+import { useParams, useNavigate, Link } from "react-router-dom";
+import { books } from "../Data/books";
 
-function BookDetails() {
+function BookDetails({ auth }) {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [book, setBook] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     const foundBook = books.find((b) => String(b.id) === String(id));
     setBook(foundBook);
     setLoading(false);
@@ -29,10 +31,18 @@ function BookDetails() {
     );
   }
 
+  const handleBooking = () => {
+    if (auth?.isAuthenticated) {
+      navigate(`/books/booking/${book.id}`);
+    } else {
+      alert("Please login to book this book.");
+      navigate("/login");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#0f172a] text-white py-20 px-6">
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-10 bg-[#1e293b] rounded-3xl p-6 md:p-10 shadow-2xl">
-        
         {/* Book Image */}
         <div className="md:w-1/2">
           <img
@@ -40,7 +50,6 @@ function BookDetails() {
             alt={book.title}
             className="rounded-2xl w-full object-cover shadow-lg border border-white/20"
           />
-          {/* Thumbnails Placeholder */}
           <div className="flex mt-4 space-x-4 overflow-x-auto">
             <img
               src={book.image}
@@ -63,12 +72,12 @@ function BookDetails() {
             Experience the story of <span className="font-semibold">{book.title}</span> by {book.author}. Dive into the {book.category} genre with a rating of {book.rating} stars. An immersive book perfect for your next read.
           </p>
 
-          <Link
-            to={`/books/booking/${book.id}`}
+          <button
+            onClick={handleBooking}
             className="inline-block mt-4 bg-red-600 text-white px-6 py-3 rounded-full hover:bg-red-700 transition duration-300 font-semibold"
           >
             📚 Book Now
-          </Link>
+          </button>
 
           {/* Specifications */}
           <div className="mt-6 border-t border-gray-600 pt-4">

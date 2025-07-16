@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+// import axios from "axios";
 
-function Login() {
+function Login({ setAuth }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const validateForm = () => {
     if (!email.endsWith("@gmail.com")) {
@@ -22,44 +26,45 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(""); // Clear previous errors
+    setError("");
 
     if (!validateForm()) return;
 
-    try {
-      const res = await axios.post("http://localhost:8080/api/auth/login", {
-        email,
-        password,
-      });
+    // try {
+    //   const res = await axios.post("http://localhost:8080/api/auth/login", {
+    //     email,
+    //     password,
+    //   });
 
-      localStorage.setItem("token", res.data.token);
-      navigate("/dashboard");
-    } catch (err) {
-      console.error("Login failed:", err);
-      setError("Invalid login credentials");
-    }
+      // localStorage.setItem("token", res.data.token);
+      setAuth({ isAuthenticated: true, user: { name: email.split('@')[0],email}});
+      navigate("/");
+    // } catch (err) {
+    //   console.error("Login failed:", err);
+    //   setError("Invalid login credentials");
+    // }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-indigo-700 to-purple-700">
-      <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
-        <h2 className="text-3xl font-bold text-center text-indigo-700 mb-6">
+    <div className="pt-28 min-h-screen flex items-center justify-center bg-gray-100 dark:bg-[#0c0f1f] px-4 py-12 transition-colors duration-300">
+      <div className="w-full max-w-md bg-white dark:bg-[#1c2237] p-8 rounded-2xl shadow-2xl transition-colors duration-300">
+        <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white mb-6">
           Login to Your Account
         </h2>
 
         {error && (
-          <div className="bg-red-100 text-red-700 px-4 py-2 rounded mb-4 text-center font-semibold">
+          <div className="bg-red-100 dark:bg-red-200 border border-red-400 text-red-700 px-4 py-2 rounded mb-4 text-sm text-center">
             {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block mb-1 font-medium text-gray-700">Email</label>
+            <label className="block text-gray-700 dark:text-white font-medium mb-1">Email</label>
             <input
               type="email"
               placeholder="example@gmail.com"
-              className="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#101322] text-gray-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -67,11 +72,11 @@ function Login() {
           </div>
 
           <div>
-            <label className="block mb-1 font-medium text-gray-700">Password</label>
+            <label className="block text-gray-700 dark:text-white font-medium mb-1">Password</label>
             <input
               type="password"
               placeholder="Enter password"
-              className="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#101322] text-gray-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -80,17 +85,17 @@ function Login() {
 
           <button
             type="submit"
-            className="w-full bg-indigo-600 text-white py-2 rounded-md font-semibold hover:bg-indigo-700 transition duration-200"
+            className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl font-semibold transition duration-200 shadow-md"
           >
             Login
           </button>
         </form>
 
-        <p className="text-center mt-4 text-sm text-gray-600">
-          Don’t have an account?{" "}
+        <p className="text-center text-sm text-gray-700 dark:text-gray-300 mt-6">
+          Don't have an account?{" "}
           <span
-            className="text-indigo-600 font-semibold cursor-pointer hover:underline"
             onClick={() => navigate("/register")}
+            className="text-red-500 font-semibold cursor-pointer hover:underline"
           >
             Register
           </span>

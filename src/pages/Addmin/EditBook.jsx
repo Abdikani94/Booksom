@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import '../Data/books'
+import '../../Data/books'
 
 function EditBook({ books, setBooks }) {
   const { id } = useParams();

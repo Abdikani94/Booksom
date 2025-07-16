@@ -1,50 +1,45 @@
-import { Link, useNavigate } from "react-router-dom";
-import { useContext } from "react";
-import { AuthContext } from "../Components/AuthContext/AuthContext";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
-function Header() {
-  const { isAuthenticated, logout } = useContext(AuthContext);
+function PageLogout({ setAuth }) {
   const navigate = useNavigate();
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const handleLogout = () => {
-    logout();
-    navigate("/login");
+    setAuth({ isAuthenticated: false, user: null });
+    navigate("/");
+  };
+
+  const handleCancel = () => {
+    navigate(-1); // Dib ugu celi page-kii hore
   };
 
   return (
-    <header className="bg-indigo-700 text-white p-4 flex justify-between">
-      <h1 className="text-xl font-bold">My Library</h1>
-      <nav className="space-x-4">
-        <Link to="/" className="hover:underline">
-          Books
-        </Link>
-
-        {isAuthenticated && (
-          <Link to="/add" className="hover:underline">
-            Add Book
-          </Link>
-        )}
-
-        {isAuthenticated ? (
+    <div className="pt-28 min-h-screen flex items-center justify-center bg-gray-100 dark:bg-[#0c0f1f] px-4 py-12 transition-colors duration-300">
+      <div className="w-full max-w-md bg-white dark:bg-[#1c2237] p-8 rounded-2xl shadow-2xl text-center transition-colors duration-300">
+        <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-6">
+          Are you sure you want to logout?
+        </h2>
+        <div className="flex flex-col sm:flex-row justify-center gap-4 mt-6">
           <button
             onClick={handleLogout}
-            className="hover:underline bg-red-500 px-3 py-1 rounded"
+            className="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl font-semibold transition duration-200 shadow-md"
           >
-            Logout
+            Yes, Logout
           </button>
-        ) : (
-          <>
-            <Link to="/login" className="hover:underline">
-              Login
-            </Link>
-            <Link to="/register" className="hover:underline">
-              Register
-            </Link>
-          </>
-        )}
-      </nav>
-    </header>
+          <button
+            onClick={handleCancel}
+            className="w-full sm:w-auto bg-gray-300 hover:bg-gray-400 text-gray-900 px-6 py-3 rounded-xl font-semibold transition duration-200 shadow-md"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
 
-export default Header;
+export default PageLogout;

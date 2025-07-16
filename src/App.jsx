@@ -1,9 +1,10 @@
 import './App.css';
-import Routers from './AllRouters/Routers';
+import Routers from './Components/AllRouters/Routers';
 import { CartProvider } from "./Components/Context/CartContext";
 import Header from './Components/Header';
 import Footer from './Components/Footer';
 import { Toaster } from 'react-hot-toast';
+
 
 function App() {
   // Dark mode control
