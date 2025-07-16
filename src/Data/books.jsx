@@ -111,7 +111,7 @@ export const books = [
   },
   {
     id: 11,
-    title: "The Subtle Art",
+    name: "The Subtle Art",
     author: "Mark Manson",
     category: "Self-Help",
     rating: 4.3,
@@ -122,7 +122,7 @@ export const books = [
   },
   {
     id: 12,
-    title: "The 5 AM Club",
+    name: "The 5 AM Club",
     author: "Robin Sharma",
     category: "Productivity",
     rating: 4.4,
@@ -130,5 +130,6 @@ export const books = [
     stock: 8,
     tags: ["New"],
     image: "https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&w=400&q=80"
+    
   }
 ];

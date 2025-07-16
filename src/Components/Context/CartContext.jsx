@@ -36,7 +36,7 @@ export function CartProvider({ children }) {
   };
 
   const updateQuantity = (id, quantity) => {
-    if (quantity < 1) return; // Ha ogolaanin quantity < 1
+    if (quantity < 1) return; 
     setCartItems((prev) =>
       prev.map((item) =>
         item.id === id ? { ...item, quantity: quantity } : item

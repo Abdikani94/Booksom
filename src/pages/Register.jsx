@@ -4,8 +4,10 @@ import { useNavigate } from "react-router-dom";
 function Register() {
   const navigate = useNavigate();
 
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
 
   const hasNumber = /\d/.test(password);
@@ -17,6 +19,11 @@ function Register() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    if (!fullName || !email || !password || !confirmPassword) {
+      setError("Please fill in all fields.");
+      return;
+    }
+
     if (!isEmailValid) {
       setError("Email must end with @gmail.com");
       return;
@@ -27,12 +34,17 @@ function Register() {
       return;
     }
 
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
     setError("");
     navigate("/login");
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 px-4 py-12">
+    <div className="pt-28 min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 px-4 py-12">
       <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-xl transform transition duration-300 hover:scale-[1.01]">
         <h2 className="text-3xl font-extrabold text-center text-indigo-700 mb-6">
           Create Your Account
@@ -45,6 +57,18 @@ function Register() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">Full Name</label>
+            <input
+              type="text"
+              placeholder="Your full name"
+              className="w-full px-4 py-3 border rounded-xl border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              required
+            />
+          </div>
+
           <div>
             <label className="block text-gray-700 font-medium mb-1">Email</label>
             <input
@@ -65,6 +89,18 @@ function Register() {
               className="w-full px-4 py-3 border rounded-xl border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">Confirm Password</label>
+            <input
+              type="password"
+              placeholder="Re-enter your password"
+              className="w-full px-4 py-3 border rounded-xl border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
               required
             />
           </div>

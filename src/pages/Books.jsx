@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../Components/Context/CartContext";
-import { books as bookData } from "../Data/books"; // ✅ Local data import
 import {
   FaStar,
   FaStarHalfAlt,
@@ -12,52 +11,44 @@ import {
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { Fade } from "react-awesome-reveal";
+import { books } from "../Data/books"; // ✅ static books import
 
 function renderStars(rating) {
   const stars = [];
   const fullStars = Math.floor(rating);
   const halfStar = rating % 1 >= 0.5;
-
-  for (let i = 0; i < fullStars; i++) {
-    stars.push(<FaStar key={`full-${i}`} className="text-yellow-400 text-sm" />);
-  }
-  if (halfStar) {
-    stars.push(<FaStarHalfAlt key="half" className="text-yellow-400 text-sm" />);
-  }
-  while (stars.length < 5) {
-    stars.push(
-      <FaRegStar key={`empty-${stars.length}`} className="text-yellow-400 text-sm" />
-    );
-  }
+  for (let i = 0; i < fullStars; i++)
+    stars.push(<FaStar key={`full-${i}`} className="text-yellow-300 text-sm" />);
+  if (halfStar)
+    stars.push(<FaStarHalfAlt key="half" className="text-yellow-300 text-sm" />);
+  while (stars.length < 5)
+    stars.push(<FaRegStar key={`empty-${stars.length}`} className="text-yellow-300 text-sm" />);
   return stars;
 }
 
 function Books() {
-  const [books, setBooks] = useState([]);
+  const [booksState, setBooks] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterCategory, setFilterCategory] = useState("All");
   const [sortBy, setSortBy] = useState("default");
   const [currentPage, setCurrentPage] = useState(1);
-  const [activeTag, setActiveTag] = useState("All");
   const { addToCart } = useCart();
   const booksPerPage = 8;
-  const tagFilters = ["All", "Trending", "New", "Classic"];
 
-  // ✅ Load from local data
   useEffect(() => {
-    setBooks(bookData);
+    // ✅ Use static books instead of API call
+    setBooks(books);
   }, []);
 
-  const categories = ["All", ...new Set(books.map((b) => b.category))];
+  const categories = ["All", ...new Set(booksState.map((b) => b.category))];
 
-  let filteredBooks = books
+  const filteredBooks = booksState
     .filter(
-      (book) =>
-        (book.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          book.author?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          book.category?.toLowerCase().includes(searchTerm.toLowerCase())) &&
-        (filterCategory === "All" || book.category === filterCategory) &&
-        (activeTag === "All" || (book.tags && book.tags.includes(activeTag)))
+      (b) =>
+        (b.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          b.author?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          b.category?.toLowerCase().includes(searchTerm.toLowerCase())) &&
+        (filterCategory === "All" || b.category === filterCategory)
     )
     .sort((a, b) => {
       if (sortBy === "price") return a.price - b.price;
@@ -66,54 +57,67 @@ function Books() {
       return 0;
     });
 
-  const indexOfLastBook = currentPage * booksPerPage;
-  const indexOfFirstBook = indexOfLastBook - booksPerPage;
-  const currentBooks = filteredBooks.slice(indexOfFirstBook, indexOfLastBook);
+  const indexOfLast = currentPage * booksPerPage;
+  const currentBooks = filteredBooks.slice(indexOfLast - booksPerPage, indexOfLast);
   const totalPages = Math.ceil(filteredBooks.length / booksPerPage);
 
   return (
-    <div className="min-h-screen pt-28 bg-gradient-to-br from-[#fefefe] to-[#f5f5f5]">
-      {/* Banner */}
-      <div
-        className="w-full bg-cover bg-center bg-no-repeat p-16 md:p-28 mb-12 rounded-3xl shadow-2xl text-center relative"
-        style={{
-          backgroundImage:
-            "url('https://images.pexels.com/photos/256541/pexels-photo-256541.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940')",
-        }}
-      >
-        <div className="absolute inset-0 bg-black/50 rounded-3xl"></div>
-        <div className="relative z-10 max-w-4xl mx-auto text-white">
-          <h1 className="text-5xl sm:text-6xl font-extrabold tracking-tight drop-shadow-lg">
-            Explore Bestselling Books Under $50
+    <div className="min-h-screen pt-28 bg-white dark:bg-gray-900 transition-colors duration-300">
+      {/* Hero Section */}
+      <div className="w-full relative p-16 md:p-28 mb-12 rounded-3xl overflow-hidden shadow-2xl">
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage:
+              "url('https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=compress&cs=tinysrgb&h=1080')",
+          }}
+        />
+        <div className="absolute inset-0 bg-black/50 dark:bg-black/70 backdrop-blur-sm rounded-3xl" />
+        <div className="relative z-10 max-w-4xl mx-auto text-center text-white">
+          <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight">
+            Your Story, Your Book, Your Way
           </h1>
-          <p className="mt-4 text-xl sm:text-2xl font-light drop-shadow-md">
-            Curated collections, trending titles, and classic must-haves.
+          <p className="mt-4 text-xl sm:text-2xl font-light">
+            Explore a world of stories and knowledge with every page.
           </p>
+          <div className="mt-8">
+            <button
+              onClick={() => {
+                const el = document.getElementById("explore-books");
+                if (el) el.scrollIntoView({ behavior: "smooth" });
+              }}
+              className="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-full font-semibold text-lg shadow-md transition"
+            >
+              Explore Books
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="flex flex-col lg:flex-row justify-center items-center gap-4 mb-8 px-4">
+      {/* Filter & Sorting */}
+      <div className="flex flex-col lg:flex-row justify-center items-center gap-4 mb-10 px-4">
         <input
           type="text"
           placeholder="🔍 Search books..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full max-w-md px-5 py-3 rounded-xl bg-white border border-gray-300 placeholder-gray-500 shadow-sm focus:outline-none focus:ring-4 focus:ring-yellow-400"
+          className="w-full max-w-md px-5 py-3 rounded-xl bg-white dark:bg-gray-800 dark:text-white border border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 shadow-sm focus:outline-none focus:ring-4 focus:ring-yellow-400"
         />
         <select
           value={filterCategory}
           onChange={(e) => setFilterCategory(e.target.value)}
-          className="px-5 py-3 rounded-xl bg-white border border-gray-300 text-gray-800 font-medium shadow-sm focus:outline-none"
+          className="px-5 py-3 rounded-xl bg-white dark:bg-gray-800 dark:text-white border border-gray-300 dark:border-gray-600 font-medium shadow-sm focus:outline-none"
         >
           {categories.map((cat) => (
-            <option key={cat} value={cat}>{cat}</option>
+            <option key={cat} value={cat}>
+              {cat}
+            </option>
           ))}
         </select>
         <select
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value)}
-          className="px-5 py-3 rounded-xl bg-white border border-gray-300 text-gray-800 font-medium shadow-sm focus:outline-none"
+          className="px-5 py-3 rounded-xl bg-white dark:bg-gray-800 dark:text-white border border-gray-300 dark:border-gray-600 font-medium shadow-sm focus:outline-none"
         >
           <option value="default">Sort By</option>
           <option value="price">Price: Low to High</option>
@@ -122,70 +126,55 @@ function Books() {
         </select>
       </div>
 
-      {/* Tag Filters */}
-      <div className="flex flex-wrap justify-center gap-3 mb-10 px-4">
-        {tagFilters.map((tag) => (
-          <button
-            key={tag}
-            onClick={() => setActiveTag(tag)}
-            className={`px-4 py-2 text-sm rounded-full border transition ${
-              activeTag === tag
-                ? "bg-yellow-500 text-white border-yellow-600 shadow"
-                : "bg-white text-gray-800 border-gray-300 hover:bg-yellow-100"
-            }`}
-          >
-            {tag}
-          </button>
-        ))}
-      </div>
-
-      {/* Books Grid */}
-      <div className="max-w-7xl mx-auto px-4">
+      {/* Book Cards */}
+      <div id="explore-books" className="max-w-7xl mx-auto px-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8">
-          {currentBooks.length > 0 ? (
+          {currentBooks.length ? (
             currentBooks.map((book) => (
               <Fade triggerOnce direction="up" key={book.id}>
-                <div className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-200">
-                  <div className="relative w-full h-[280px] overflow-hidden rounded-t-xl">
+                <div className="bg-black/60 backdrop-blur-md border border-gray-700 rounded-2xl shadow-lg hover:scale-[1.02] transition-transform duration-300 overflow-hidden group">
+                  <div className="relative w-full h-[260px]">
                     {book.discount && (
-                      <span className="absolute top-3 left-3 bg-red-500 text-white text-xs px-2 py-1 rounded-full z-10">
+                      <span className="absolute top-3 left-3 bg-red-600 text-white text-xs px-2 py-1 rounded-full z-10 font-semibold shadow">
                         -{book.discount}%
                       </span>
                     )}
-                    <button className="absolute top-3 right-3 text-white bg-black/40 hover:bg-black/70 p-1.5 rounded-full z-10 transition">
-                      <FaRegHeart className="text-lg" />
+                    <button className="absolute top-3 right-3 text-white bg-white/10 hover:bg-white/20 p-2 rounded-full z-10 transition">
+                      <FaRegHeart className="text-base" />
                     </button>
                     <LazyLoadImage
                       src={book.image}
                       alt={book.title}
                       effect="blur"
-                      className="w-full h-full object-cover object-center scale-100 hover:scale-105 transition-transform duration-500"
+                      className="w-full h-full object-cover object-center scale-100 group-hover:scale-105 transition-transform duration-500"
                     />
                   </div>
-                  <div className="p-4 space-y-1">
-                    <h2 className="text-lg font-semibold text-gray-900 truncate">{book.title}</h2>
-                    <p className="text-sm text-gray-600">{book.author}</p>
-                    <p className="text-xs text-gray-400 italic">{book.category}</p>
+
+                  <div className="p-4 text-white space-y-1">
+                    <h2 className="text-lg font-bold truncate">{book.title}</h2>
+                    <p className="text-sm text-gray-300">{book.author}</p>
+                    <p className="text-xs italic text-gray-400">{book.category}</p>
                     <div className="flex items-center text-sm">{renderStars(book.rating || 4.5)}</div>
-                    <p className="text-base font-bold text-green-600">${book.price}</p>
+                    <p className="text-base font-bold text-green-400">${book.price}</p>
                     <p className="text-xs text-gray-500">{book.stock} in stock</p>
-                    <div className="flex items-center justify-between pt-2">
+
+                    <div className="flex justify-between items-center pt-3">
                       <button
                         onClick={() => addToCart(book)}
-                        className="text-sm flex items-center gap-1 text-yellow-600 hover:text-yellow-700 transition"
+                        className="flex items-center gap-1 text-dark-400 hover:text-dark-300 text-sm transition"
                       >
                         <FaShoppingCart /> Add to Cart
                       </button>
                       <div className="flex gap-2">
                         <Link
                           to={`/books/${book.id}`}
-                          className="text-sm bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1.5 rounded-md transition"
+                          className="text-sm px-3 py-1.5 rounded-md bg-gradient-to-r from-blue-500 to-blue-400 hover:from-blue-400 hover:to-blue-300 text-black font-semibold transition"
                         >
                           View
                         </Link>
                         <Link
                           to={`/books/booking/${book.id}`}
-                          className="text-sm bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded-md transition"
+                          className="text-sm px-3 py-1.5 rounded-md bg-gradient-to-r from-green-500 to-green-400 hover:from-green-400 hover:to-green-300 text-black font-semibold transition"
                         >
                           Book
                         </Link>
@@ -196,7 +185,7 @@ function Books() {
               </Fade>
             ))
           ) : (
-            <p className="col-span-full text-center text-gray-700 text-xl font-semibold">
+            <p className="col-span-full text-center text-gray-700 dark:text-gray-300 text-xl font-semibold">
               🚫 No books found.
             </p>
           )}
@@ -205,17 +194,17 @@ function Books() {
         {/* Pagination */}
         {totalPages > 1 && (
           <div className="flex justify-center mt-14 mb-10 space-x-2">
-            {[...Array(totalPages).keys()].map((page) => (
+            {[...Array(totalPages)].map((_, i) => (
               <button
-                key={page + 1}
-                onClick={() => setCurrentPage(page + 1)}
+                key={i + 1}
+                onClick={() => setCurrentPage(i + 1)}
                 className={`px-5 py-2 rounded-full font-semibold text-sm transition duration-300 ${
-                  currentPage === page + 1
+                  currentPage === i + 1
                     ? "bg-yellow-500 text-white shadow"
-                    : "bg-gray-200 hover:bg-yellow-100 text-gray-800"
+                    : "bg-gray-200 dark:bg-gray-700 hover:bg-yellow-100 dark:hover:bg-yellow-600 text-gray-800 dark:text-white"
                 }`}
               >
-                {page + 1}
+                {i + 1}
               </button>
             ))}
           </div>
