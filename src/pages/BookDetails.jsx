@@ -41,7 +41,7 @@ function BookDetails({ auth }) {
   };
 
   return (
-    <div className="min-h-screen bg-[#0f172a] text-white py-20 px-6">
+    <div className="min-h-screen bg-[#0f172a] text-white pt-24 pb-20 px-6">
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-10 bg-[#1e293b] rounded-3xl p-6 md:p-10 shadow-2xl">
         {/* Book Image */}
         <div className="md:w-1/2">

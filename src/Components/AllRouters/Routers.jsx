@@ -23,7 +23,7 @@ function Routers() {
           <Route path='*' element={<PageNotFound />} />
           <Route path='/Register' element={<Register setAuth={setAuth} />} />
            
-          <Route path="/cart" element={<CartPage />} />
+          <Route path="/cart" element={<CartPage uth={auth}/>} />
          
           {/* <Route path='/AddminDashboard' element={<AddminDashboard/>} /> */}
           {/* <Route path="/admin/books" element={<AdminBooks/>} />

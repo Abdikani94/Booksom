@@ -17,12 +17,15 @@ function renderStars(rating) {
   const stars = [];
   const fullStars = Math.floor(rating);
   const halfStar = rating % 1 >= 0.5;
-  for (let i = 0; i < fullStars; i++)
+  for (let i = 0; i < fullStars; i++) {
     stars.push(<FaStar key={`full-${i}`} className="text-yellow-300 text-sm" />);
-  if (halfStar)
+  }
+  if (halfStar) {
     stars.push(<FaStarHalfAlt key="half" className="text-yellow-300 text-sm" />);
-  while (stars.length < 5)
+  }
+  while (stars.length < 5) {
     stars.push(<FaRegStar key={`empty-${stars.length}`} className="text-yellow-300 text-sm" />);
+  }
   return stars;
 }
 
@@ -44,12 +47,11 @@ function Books({ auth }) {
   const categories = ["All", ...new Set(booksState.map((b) => b.category))];
 
   const filteredBooks = booksState
-    .filter(
-      (b) =>
-        (b.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          b.author?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          b.category?.toLowerCase().includes(searchTerm.toLowerCase())) &&
-        (filterCategory === "All" || b.category === filterCategory)
+    .filter((b) =>
+      (b.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        b.author?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        b.category?.toLowerCase().includes(searchTerm.toLowerCase())) &&
+      (filterCategory === "All" || b.category === filterCategory)
     )
     .sort((a, b) => {
       if (sortBy === "price") return a.price - b.price;
@@ -127,14 +129,14 @@ function Books({ auth }) {
         </select>
       </div>
 
-      {/* Books */}
+      {/* Book Grid */}
       <div id="explore-books" className="max-w-7xl mx-auto px-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8">
           {currentBooks.length ? (
             currentBooks.map((book) => (
               <Fade triggerOnce direction="up" key={book.id}>
-                <div className="bg-black/60 backdrop-blur-md border border-gray-700 rounded-2xl shadow-lg hover:scale-[1.02] transition-transform duration-300 overflow-hidden group">
-                  <div className="relative w-full h-[260px]">
+                <div className="bg-black/60 backdrop-blur-md border border-gray-700 rounded-2xl shadow-lg hover:scale-[1.02] transition-transform duration-300 overflow-hidden group flex flex-col">
+                  <div className="relative w-full aspect-[2/3] bg-gray-200 dark:bg-gray-800">
                     {book.discount && (
                       <span className="absolute top-3 left-3 bg-red-600 text-white text-xs px-2 py-1 rounded-full z-10 font-semibold shadow">
                         -{book.discount}%
@@ -151,15 +153,21 @@ function Books({ auth }) {
                     />
                   </div>
 
-                  <div className="p-4 text-white space-y-1">
-                    <h2 className="text-lg font-bold truncate">{book.title}</h2>
-                    <p className="text-sm text-gray-300">{book.author}</p>
-                    <p className="text-xs italic text-gray-400">{book.category}</p>
-                    <div className="flex items-center text-sm">{renderStars(book.rating || 4.5)}</div>
-                    <p className="text-base font-bold text-green-400">${book.price}</p>
-                    <p className="text-xs text-gray-500">{book.stock} in stock</p>
+                  <div className="p-4 text-white space-y-2 flex flex-col flex-grow">
+                    <div className="space-y-0.5">
+                      <h2 className="text-lg font-semibold truncate">{book.title}</h2>
+                      <p className="text-sm text-gray-300 truncate">{book.author}</p>
+                      <p className="text-xs italic text-gray-400">{book.category}</p>
+                    </div>
 
-                    <div className="flex justify-between items-center pt-3">
+                    <div className="flex items-center justify-between text-sm pt-1">
+                      <div className="flex">{renderStars(book.rating || 4.5)}</div>
+                      <span className="text-xs text-gray-400">{book.stock} in stock</span>
+                    </div>
+
+                    <p className="text-base font-bold text-green-400">${book.price}</p>
+
+                    <div className="mt-auto pt-3 flex justify-between items-center">
                       <button
                         onClick={() => {
                           if (auth?.isAuthenticated) {

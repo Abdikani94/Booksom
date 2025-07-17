@@ -93,10 +93,7 @@ const CartPage = () => {
                       >
                         <FaTrash />
                       </button>
-                      <label className="text-xs text-gray-600 dark:text-gray-400 flex items-center gap-1">
-                        <input type="checkbox" className="accent-yellow-500" />
-                        Gift?
-                      </label>
+                    
                     </div>
                   </div>
                 );
