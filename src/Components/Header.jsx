@@ -91,6 +91,11 @@ function Header() {
                 Contact
               </Link>
             </li>
+               <li>
+              <Link to="/admin-dashboard" onClick={handleLinkClick} className={navLinkClass('/admin-dashboard')}>
+              
+              </Link>
+            </li>
             <li className="relative">
               <Link to="/cart" onClick={handleLinkClick} className="text-gray-900 dark:text-white flex items-center gap-1">
                 <FaShoppingCart size={24} />

@@ -1,54 +1,65 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import '../../Data/books'
+import axios from 'axios';
 
-function EditBook({ books, setBooks }) {
+const BASE_URL = 'http://localhost:8080/api/books'; // Isku xirka backend-kaaga sax ah
+
+function EditBook() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const bookToEdit = books.find((b) => b.id === parseInt(id));
 
   const [formData, setFormData] = useState({
     title: '',
     author: '',
     category: '',
+    price: '',
+    stock: '',
+    rating: '',
     image: '',
     description: '',
   });
 
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  // Fetch single book to edit
   useEffect(() => {
-    if (bookToEdit) {
-      setFormData({
-        title: bookToEdit.title,
-        author: bookToEdit.author,
-        category: bookToEdit.category,
-        image: bookToEdit.image,
-        description: bookToEdit.description,
+    axios.get(`${BASE_URL}/${id}`)
+      .then((res) => {
+        setFormData(res.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Failed to load book:", err);
+        setError("Book not found!");
+        setLoading(false);
       });
-    }
-  }, [bookToEdit]);
+  }, [id]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const updatedBooks = books.map((b) =>
-      b.id === parseInt(id) ? { ...b, ...formData } : b
-    );
-
-    setBooks(updatedBooks);
-    navigate('/admin/books');
+    try {
+      await axios.put(`${BASE_URL}/${id}`, formData);
+      navigate('/admin/books');
+    } catch (err) {
+      console.error("Update failed:", err);
+      setError('Failed to update book!');
+    }
   };
 
-  if (!bookToEdit) {
-    return <div className="p-6 text-red-500">Book Not Found</div>;
+  if (loading) {
+    return <div className="p-6">Loading book...</div>;
   }
 
   return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold mb-6">Edit Book: {bookToEdit.title}</h1>
+    <div className="p-6 max-w-2xl mx-auto">
+      <h1 className="text-3xl font-bold mb-6">Edit Book: {formData.title}</h1>
+
+      {error && <div className="text-red-500 mb-4">{error}</div>}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
@@ -79,13 +90,39 @@ function EditBook({ books, setBooks }) {
           required
         />
         <input
+          type="number"
+          name="price"
+          value={formData.price}
+          onChange={handleChange}
+          placeholder="Price"
+          className="w-full border px-4 py-2 rounded"
+          required
+        />
+        <input
+          type="number"
+          name="rating"
+          value={formData.rating}
+          onChange={handleChange}
+          placeholder="Rating"
+          className="w-full border px-4 py-2 rounded"
+          required
+        />
+        <input
+          type="number"
+          name="stock"
+          value={formData.stock}
+          onChange={handleChange}
+          placeholder="Stock"
+          className="w-full border px-4 py-2 rounded"
+          required
+        />
+        <input
           type="text"
           name="image"
           value={formData.image}
           onChange={handleChange}
           placeholder="Image URL"
           className="w-full border px-4 py-2 rounded"
-          required
         />
         <textarea
           name="description"
@@ -94,12 +131,11 @@ function EditBook({ books, setBooks }) {
           placeholder="Description"
           className="w-full border px-4 py-2 rounded"
           rows={4}
-          required
         ></textarea>
 
         <button
           type="submit"
-          className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
         >
           Update Book
         </button>

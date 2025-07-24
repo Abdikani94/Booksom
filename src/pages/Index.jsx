@@ -11,5 +11,8 @@ export{default as About} from "./About"
 export{default as CartPage} from "./Cart"
 export{default as Home} from "./Home"
 export{default as BookingForm} from "./BookingForm"
+export{default as AdminBooks } from "./AddminBooks"
+export{default as Manageusers} from "./ManageUsers"
+export{default as EditBook} from "./EditBook"
 
 

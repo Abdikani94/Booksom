@@ -1,9 +1,9 @@
-import './App.css';
 import Routers from './Components/AllRouters/Routers';
 import { CartProvider } from "./Components/Context/CartContext";
 import Header from './Components/Header';
 import Footer from './Components/Footer';
 import { Toaster } from 'react-hot-toast';
+
 
 
 function App() {
@@ -18,22 +18,23 @@ function App() {
   }
 
   return (
-    <>
-      <CartProvider>
-        <Header />
-        <Routers />
-        <Footer />
-       <Toaster position="top-right" />
-      </CartProvider>
+   <>
+<CartProvider>
+  <Header />
+  <Routers />
+  <Footer />
+  <Toaster
+    position="top-right"
+    toastOptions={{
+      style: {
+        borderRadius: '10px',
+        background: '#333',
+        color: '#fff',
+      },
+    }}
+  />
+</CartProvider>
 
-      {/* Add this below everything to enable toast notifications */}
-      <Toaster position="top-right" toastOptions={{
-        style: {
-          borderRadius: '10px',
-          background: '#333',
-          color: '#fff',
-        },
-      }} />
     </>
   );
 }

@@ -11,7 +11,7 @@ const About = () => {
   return (
     <div className="pt-[120px] pb-[120px] min-h-screen bg-gray-100 dark:bg-[#0c0f1f] px-4 sm:px-6 lg:px-8 transition-colors duration-300">
       <div className="max-w-6xl mx-auto space-y-16">
-        {/* Header */}
+    
         <div className="text-center">
           <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-800 dark:text-white mb-4">
             About <span className="text-red-500">Booksom</span>
@@ -21,7 +21,7 @@ const About = () => {
           </p>
         </div>
 
-        {/* Image Section */}
+        
         <div className="rounded-3xl overflow-hidden shadow-xl">
           <img
             src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1350&q=80"
@@ -52,7 +52,7 @@ const About = () => {
           </div>
         </div>
 
-        {/* Why Choose Us */}
+       
         <div className="space-y-8">
           <div className="text-center">
             <h2 className="text-3xl font-bold text-gray-800 dark:text-white mb-4">

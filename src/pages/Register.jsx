@@ -15,7 +15,7 @@ function Register({ setAuth }) {
     window.scrollTo(0, 0);
   }, []);
 
-  // Validation checks
+  
   const hasNumber = /\d/.test(password);
   const hasLetter = /[a-zA-Z]/.test(password);
   const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);

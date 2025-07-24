@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { books } from "../Data/books";
 
 function BookDetails({ auth }) {
   const { id } = useParams();
@@ -10,10 +9,31 @@ function BookDetails({ auth }) {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    const foundBook = books.find((b) => String(b.id) === String(id));
-    setBook(foundBook);
-    setLoading(false);
+    const fetchBook = async () => {
+      try {
+        const response = await fetch(`http://localhost:8080/api/books/${id}`);
+        if (!response.ok) throw new Error("Book not found");
+        const data = await response.json();
+        setBook(data);
+      } catch (error) {
+        console.error("Error fetching book:", error);
+        setBook(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBook();
   }, [id]);
+
+  const handleBooking = () => {
+    if (auth?.isAuthenticated) {
+      navigate(`/books/booking/${book.id}`);
+    } else {
+      alert("Please login to book this book.");
+      navigate("/login");
+    }
+  };
 
   if (loading) {
     return (
@@ -30,15 +50,6 @@ function BookDetails({ auth }) {
       </div>
     );
   }
-
-  const handleBooking = () => {
-    if (auth?.isAuthenticated) {
-      navigate(`/books/booking/${book.id}`);
-    } else {
-      alert("Please login to book this book.");
-      navigate("/login");
-    }
-  };
 
   return (
     <div className="min-h-screen bg-[#0f172a] text-white pt-24 pb-20 px-6">
@@ -83,7 +94,7 @@ function BookDetails({ auth }) {
           <div className="mt-6 border-t border-gray-600 pt-4">
             <h3 className="text-xl font-semibold mb-2">Specifications:</h3>
             <ul className="space-y-1">
-              <li><span className="font-semibold text-gray-400">Author:</span> {book.author}</li>
+              <li><span className="font-semibold text-gray-400">Name:</span> {book.name}</li>
               <li><span className="font-semibold text-gray-400">Category:</span> {book.category}</li>
               <li><span className="font-semibold text-gray-400">Rating:</span> {book.rating}</li>
               <li><span className="font-semibold text-gray-400">Stock:</span> {book.stock}</li>
